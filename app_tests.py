@@ -1,4 +1,4 @@
-import os, app, unittest
+import os, hello, unittest
 
 from judging_sessions import SimpleSession, CHOICE_A, CHOICE_B
 class TestSimpleSession(unittest.TestCase):

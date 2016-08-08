@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from judging_sessions import SimpleSession
-from store import redis
+from redis_store import redis
 
 app = Flask(__name__)
 

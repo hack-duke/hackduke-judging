@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from store import redis
 app = Flask(__name__)
 
 ########

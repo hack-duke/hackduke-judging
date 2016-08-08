@@ -18,10 +18,16 @@ class TestSimpleSession(unittest.TestCase):
         self.assertEqual((0,1), curr_session.get_decision(judge_1)) # Should be the same thing when requesting same judge
         self.assertEqual((2,3), curr_session.get_decision(judge_2))
 
+        self.assertEqual(curr_session.judge_counts[judge_1],  0)
+        self.assertEqual(curr_session.judge_counts[judge_2], 0)
+
         self.assertTrue(curr_session.perform_decision('wrong_judge', CHOICE_A) != '')
         self.assertTrue(curr_session.perform_decision(judge_1, 'invalid_choice') != '')
         self.assertTrue(curr_session.perform_decision(judge_1, CHOICE_A) == '')
         self.assertTrue(curr_session.perform_decision(judge_2, CHOICE_B) == '')
+        self.assertEqual(curr_session.judge_counts[judge_1], 1)
+        self.assertEqual(curr_session.judge_counts[judge_2], 1)
+        self.assertEqual(len(curr_session.judge_counts), 2)
         self.assertEqual(curr_session.votes[0], 1)
         self.assertEqual(curr_session.votes[1], 0)
         self.assertEqual(curr_session.votes[2], 0)

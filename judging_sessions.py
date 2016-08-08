@@ -26,7 +26,7 @@ class SimpleSession(JudgingSession):
         if num_alts <= 1:
             raise ValueError('Number of alternates must be greater than 1!')
         self.num_alts = num_alts
-        self.curr_judges, self.votes, self.num_times_judged = {}, {}, {}
+        self.curr_judges, self.votes, self.num_times_judged, self.judge_counts = {}, {}, {}, {}
         self.q = queue.PriorityQueue()
         for i in range(num_alts):
             self.votes[i] = 0
@@ -38,6 +38,7 @@ class SimpleSession(JudgingSession):
             return self.curr_judges[judge_id]
         a,b  = self.q.get()[1], self.q.get()[1]
         self.curr_judges[judge_id] = (a, b)
+        self.judge_counts[judge_id] = 0
         return (a,b)
 
     def perform_decision(self, judge_id, favored):
@@ -53,9 +54,10 @@ class SimpleSession(JudgingSession):
         self.num_times_judged[a] += 1; self.num_times_judged[b] += 1
         self.q.put((self.num_times_judged[a], a)); self.q.put((self.num_times_judged[b], b))
         self.curr_judges.pop(judge_id)
+        self.judge_counts[judge_id] += 1
         return ''
 
     def get_results(self):
-        return self.votes
+        return {'votes': self.votes, 'judge_counts': self.judge_counts}
 
 

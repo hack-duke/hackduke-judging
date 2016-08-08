@@ -76,7 +76,7 @@ def results():
     if curr_session is None:
         result['error'] = 'Need to init first!'
         return result
-    result['votes'] = curr_session.get_results()
+    result.update(curr_session.get_results())
     result['error'] = ''
     return jsonify(result)
 

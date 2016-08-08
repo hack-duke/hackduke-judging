@@ -19,6 +19,12 @@ class JudgingSession():
 class SimpleSession(JudgingSession):
 
     def __init__(self, num_alts):
+        try:
+            num_alts = int(num_alts)
+        except:
+            raise ValueError('Not an integer!')
+        if num_alts <= 1:
+            raise ValueError('Number of alternates must be greater than 1!')
         self.num_alts = num_alts
         self.curr_judges, self.votes, self.num_times_judged = {}, {}, {}
         self.q = queue.PriorityQueue()

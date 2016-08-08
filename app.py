@@ -24,17 +24,13 @@ def init_judge_session():
         result['error'] = 'Not enough args'
     else:
         num_alts = json_args['num_alts']
-        try:
-            num_alts = int(num_alts)
-        except ValueError:
-            result['error'] = 'Not an integer num_alts'
-            return jsonify(result)
-        if num_alts <= 0:
-            result['error'] = 'Not a positive num_alts'
-            return jsonify(result)
         global curr_session
-        curr_session = SimpleSession(num_alts)
-        result['error'] = ''
+        try:
+            curr_session = SimpleSession(num_alts)
+        except Exception as e:
+            result['error'] = str(e)
+        else:
+            result['error'] = ''
     return jsonify(result)
 
 @app.route('/get_decision', methods = ['POST'])

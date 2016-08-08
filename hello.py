@@ -26,11 +26,11 @@ class JudgingAlgo():
 class SimpleAlgo(JudgingAlgo):
     def __init__(self, num_alts):
         self.num_alts = num_alts
-        self.curr_judges = dict()
-        self.votes = dict()
+        self.curr_judges, self.votes, self.num_times_judged = {}, {}, {}
         self.q = queue.PriorityQueue()
         for i in range(num_alts):
             self.votes[i] = 0
+            self.num_times_judged[i] = 0
             self.q.put((0, i))
     def get_decision(self, judge_id):
         if judge_id in self.curr_judges:
@@ -56,13 +56,18 @@ class SimpleAlgo(JudgingAlgo):
 
 curr_session = None
 
-@app.route("/init", methods = ['GET'])
+@app.route("/init", methods = ['POST'])
 def init_judge_session():
     result = dict()
-    if 'num_alts' not in request.args:
+    if not request.is_json:
+        result['error'] = 'Not JSON input'
+        return result
+    json_args = request.get_json()
+
+    if 'num_alts' not in json_args:
         result['error'] = 'Not enough args'
     else:
-        num_alts = request.args['num_alts']
+        num_alts = json_args['num_alts']
         try:
             num_alts = int(num_alts)
         except ValueError:
@@ -76,31 +81,40 @@ def init_judge_session():
         result['error'] = ''
     return jsonify(result)
 
-@app.route('/get_decision', methods = ['GET'])
+@app.route('/get_decision', methods = ['POST'])
 def get_decision():
     result = dict()
+    if not request.is_json:
+        result['error'] = 'Not JSON input'
+        return result
+    json_args = request.get_json()
     if curr_session is None:
         result['error'] = 'Need to init first!'
         return jsonify(result)
-    if 'judge_id' not in request.args:
+    if 'judge_id' not in json_args:
         result['error'] = 'Not enough args'
         return jsonify(result)
-    judge_id = request.args['judge_id']
+    judge_id = json_args['judge_id']
     a,b = curr_session.get_decision(judge_id)
     result['choice_a'] = a
     result['choice_b'] = b
     return jsonify(result)
 
-@app.route('/perform_decision', methods = ['GET'])
+@app.route('/perform_decision', methods = ['POST'])
 def perform_decision():
     result = dict()
+    if not request.is_json:
+        result['error'] = 'Not JSON input'
+        return result
+    json_args = request.get_json()
+
     if curr_session is None:
         result['error'] = 'Need to init first!'
         return jsonify(result)
-    if 'judge_id' not in request.args or 'favored' not in request.args:
+    if 'judge_id' not in json_args or 'favored' not in json_args:
         result['error'] = 'Not enough args'
         return jsonify(result)
-    judge_id, favored = request.args['judge_id'], request.args['favored']
+    judge_id, favored = json_args['judge_id'], json_args['favored']
     try:
         favored = int(favored)
     except ValueError:

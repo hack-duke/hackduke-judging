@@ -8,7 +8,7 @@ curl -H "Content-Type: application/json" -X POST -d '{"num_alts":"100"}' http://
 
 curl -H "Content-Type: application/json" -X POST -d '{"judge_id":"judge_1"}' http://localhost:5000/get_decision
 
-curl -H "Content-Type: application/json" -X POST -d '{"judge_id":"judge_1", "favored": "0"}' http://localhost:5000/perform_decision
+curl -H "Content-Type: application/json" -X POST -d '{"judge_id":"judge_1", "favored": "CHOICE_A"}' http://localhost:5000/perform_decision
 
 curl http://localhost:5000/results
 

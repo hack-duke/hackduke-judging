@@ -71,11 +71,6 @@ def perform_decision():
         result['error'] = 'Not enough args'
         return jsonify(result)
     judge_id, favored = json_args['judge_id'], json_args['favored']
-    try:
-        favored = int(favored)
-    except ValueError:
-        result['error'] = 'Not a valid choice!'
-        return jsonify(result)
     result['error'] = curr_session.perform_decision(judge_id, favored)
     return jsonify(result)
 

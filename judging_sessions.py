@@ -1,5 +1,7 @@
 import queue
 
+CHOICE_A, CHOICE_B = 'CHOICE_A', 'CHOICE_B'
+
 class JudgingSession():
     def __init__(self, num_alts):
         self.num_alts = num_alts
@@ -28,10 +30,13 @@ class SimpleSession(JudgingSession):
     def perform_decision(self, judge_id, favored):
         if judge_id not in self.curr_judges:
             return 'You are currently not judging!'
-        if favored not in self.curr_judges[judge_id]:
+        if favored not in [CHOICE_A, CHOICE_B]:
             return 'That is not a valid choice!'
         a, b = self.curr_judges[judge_id]
-        self.votes[favored] += 1
+        if favored == CHOICE_A:
+            self.votes[a] += 1
+        else:
+            self.votes[b] += 1
         self.q.put((self.votes[a], a))
         self.q.put((self.votes[b], b))
         self.curr_judges.pop(judge_id)

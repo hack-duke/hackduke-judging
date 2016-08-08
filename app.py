@@ -1,4 +1,6 @@
 from flask import Flask, request, jsonify
+from judging_sessions import SimpleSession
+
 app = Flask(__name__)
 
 ########
@@ -6,53 +8,6 @@ app = Flask(__name__)
 @app.route("/")
 def hello():
     return "Hello World!"
-
-curr_session = None
-
-########
-
-import queue
-
-class JudgingAlgo():
-    def __init__(self, num_alts):
-        self.num_alts = num_alts
-    def get_decision(self):
-        raise NotImplementedError
-    def perform_decision(self):
-        raise NotImplementedError
-    def get_results(self):
-        raise NotImplementedError
-
-class SimpleAlgo(JudgingAlgo):
-    def __init__(self, num_alts):
-        self.num_alts = num_alts
-        self.curr_judges, self.votes, self.num_times_judged = {}, {}, {}
-        self.q = queue.PriorityQueue()
-        for i in range(num_alts):
-            self.votes[i] = 0
-            self.num_times_judged[i] = 0
-            self.q.put((0, i))
-    def get_decision(self, judge_id):
-        if judge_id in self.curr_judges:
-            return self.curr_judges[judge_id]
-        a,b  = self.q.get()[1], self.q.get()[1]
-        self.curr_judges[judge_id] = (a, b)
-        return (a,b)
-    def perform_decision(self, judge_id, favored):
-        if judge_id not in self.curr_judges:
-            return 'You are currently not judging!'
-        if favored not in self.curr_judges[judge_id]:
-            return 'That is not a valid choice!'
-        a, b = self.curr_judges[judge_id]
-        self.votes[favored] += 1
-        self.q.put((self.votes[a], a))
-        self.q.put((self.votes[b], b))
-        self.curr_judges.pop(judge_id)
-        return ''
-    def get_results(self):
-        return self.votes
-
-########
 
 curr_session = None
 
@@ -77,7 +32,7 @@ def init_judge_session():
             result['error'] = 'Not a positive num_alts'
             return jsonify(result)
         global curr_session
-        curr_session = SimpleAlgo(num_alts)
+        curr_session = SimpleSession(num_alts)
         result['error'] = ''
     return jsonify(result)
 

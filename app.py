@@ -2,17 +2,17 @@ from flask import Flask, request, jsonify
 from judging_sessions import SimpleSession
 from redis_store import redis
 
-app = Flask(__name__)
+judge_app = Flask(__name__)
 
 ########
 
-@app.route("/")
+@judge_app.route("/")
 def hello():
     return "Hello World!"
 
 curr_session = None
 
-@app.route("/init", methods = ['POST'])
+@judge_app.route("/init", methods = ['POST'])
 def init_judge_session():
     result = dict()
     if not request.is_json:
@@ -33,7 +33,7 @@ def init_judge_session():
             result['error'] = ''
     return jsonify(result)
 
-@app.route('/get_decision', methods = ['POST'])
+@judge_app.route('/get_decision', methods = ['POST'])
 def get_decision():
     result = dict()
     if not request.is_json:
@@ -52,7 +52,7 @@ def get_decision():
     result['choice_b'] = b
     return jsonify(result)
 
-@app.route('/perform_decision', methods = ['POST'])
+@judge_app.route('/perform_decision', methods = ['POST'])
 def perform_decision():
     result = dict()
     if not request.is_json:
@@ -70,7 +70,7 @@ def perform_decision():
     result['error'] = curr_session.perform_decision(judge_id, favored)
     return jsonify(result)
 
-@app.route('/results')
+@judge_app.route('/results')
 def results():
     result = dict()
     if curr_session is None:
@@ -81,5 +81,5 @@ def results():
     return jsonify(result)
 
 if __name__ == "__main__":
-    app.run()
+    judge_app.run()
 

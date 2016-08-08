@@ -35,6 +35,10 @@ class TestSimpleSession(unittest.TestCase):
         for i in range(4,n):
             self.assertEqual(curr_session.votes[i], 0)
 
+        curr_session.get_decision(judge_1)
+        curr_session.perform_decision(judge_1, CHOICE_A)
+        self.assertEqual(curr_session.judge_counts[judge_1], 2)
+
 if __name__ == '__main__':
     unittest.main()
 

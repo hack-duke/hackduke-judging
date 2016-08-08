@@ -38,7 +38,8 @@ class SimpleSession(JudgingSession):
             return self.curr_judges[judge_id]
         a,b  = self.q.get()[1], self.q.get()[1]
         self.curr_judges[judge_id] = (a, b)
-        self.judge_counts[judge_id] = 0
+        if judge_id not in self.judge_counts:
+            self.judge_counts[judge_id] = 0
         return (a,b)
 
     def perform_decision(self, judge_id, favored):

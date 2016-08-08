@@ -48,56 +48,75 @@ class SimpleAlgo(JudgingAlgo):
         self.q.put((self.votes[a], a))
         self.q.put((self.votes[b], b))
         self.curr_judges.pop(judge_id)
-        return 'Successfully voted'
+        return ''
     def get_results(self):
         return self.votes
 
 ########
+
 curr_session = None
 
 @app.route("/init", methods = ['GET'])
 def init_judge_session():
-    if 'num_alts' in request.args:
+    result = dict()
+    if 'num_alts' not in request.args:
+        result['error'] = 'Not enough args'
+    else:
         num_alts = request.args['num_alts']
         try:
             num_alts = int(num_alts)
         except ValueError:
-            return 'Not an integer num_alts'
+            result['error'] = 'Not an integer num_alts'
+            return jsonify(result)
         if num_alts <= 0:
-            return 'Not a positive num_alts'
+            result['error'] = 'Not a positive num_alts'
+            return jsonify(result)
         global curr_session
         curr_session = SimpleAlgo(num_alts)
-        return 'Success'
-    return 'Not enough args'
+        result['error'] = ''
+    return jsonify(result)
 
 @app.route('/get_decision', methods = ['GET'])
 def get_decision():
+    result = dict()
     if curr_session is None:
-        return 'Need to init first!'
+        result['error'] = 'Need to init first!'
+        return jsonify(result)
     if 'judge_id' not in request.args:
-        return 'Not enough args'
+        result['error'] = 'Not enough args'
+        return jsonify(result)
     judge_id = request.args['judge_id']
     a,b = curr_session.get_decision(judge_id)
-    return jsonify({'a': a, 'b': b})
+    result['choice_a'] = a
+    result['choice_b'] = b
+    return jsonify(result)
 
 @app.route('/perform_decision', methods = ['GET'])
 def perform_decision():
+    result = dict()
     if curr_session is None:
-        return 'Need to init first!'
+        result['error'] = 'Need to init first!'
+        return jsonify(result)
     if 'judge_id' not in request.args or 'favored' not in request.args:
-        return 'Not enough args'
+        result['error'] = 'Not enough args'
+        return jsonify(result)
     judge_id, favored = request.args['judge_id'], request.args['favored']
     try:
         favored = int(favored)
     except ValueError:
-        return 'Not a valid choice!'
-    return curr_session.perform_decision(judge_id, favored)
+        result['error'] = 'Not a valid choice!'
+        return jsonify(result)
+    result['error'] = curr_session.perform_decision(judge_id, favored)
+    return jsonify(result)
 
 @app.route('/results')
 def results():
+    result = dict()
     if curr_session is None:
-        return 'Need to init first!'
-    return jsonify(curr_session.get_results())
+        result['error'] = 'Need to init first!'
+    result['votes'] = curr_session.get_results()
+    result['error'] = ''
+    return jsonify(result)
 
 if __name__ == "__main__":
     app.run()

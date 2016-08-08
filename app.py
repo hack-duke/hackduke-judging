@@ -17,7 +17,7 @@ def init_judge_session():
     result = dict()
     if not request.is_json:
         result['error'] = 'Not JSON input'
-        return result
+        return jsonify(result)
     json_args = request.get_json()
 
     if 'num_alts' not in json_args:
@@ -38,7 +38,7 @@ def get_decision():
     result = dict()
     if not request.is_json:
         result['error'] = 'Not JSON input'
-        return result
+        return jsonify(result)
     json_args = request.get_json()
     if curr_session is None:
         result['error'] = 'Need to init first!'
@@ -57,7 +57,7 @@ def perform_decision():
     result = dict()
     if not request.is_json:
         result['error'] = 'Not JSON input'
-        return result
+        return jsonify(result)
     json_args = request.get_json()
 
     if curr_session is None:
@@ -75,7 +75,7 @@ def results():
     result = dict()
     if curr_session is None:
         result['error'] = 'Need to init first!'
-        return result
+        return jsonify(result)
     result.update(curr_session.get_results())
     result['error'] = ''
     return jsonify(result)

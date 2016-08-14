@@ -69,4 +69,7 @@ class SimpleSession(JudgingSession):
         return {'votes': self.store.get_all_hash(VOTES), 
                 'judge_counts': self.store.get_all_hash(JUDGE_COUNTS)}
 
+    def is_active(self):
+        return self.store.hash_len(votes) is not 0
+
 

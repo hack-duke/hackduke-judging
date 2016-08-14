@@ -39,6 +39,9 @@ class RedisStore:
 	def key_exists(self, name, key):
 		return self.redis.hexists(name, str(key))
 
+	def hash_len(self, name):
+		return self.redis.hlen(name)
+
 	# assumes keys is an array
 	def delete_hash(self, name, keys):
 		self.redis.hdel(name, *keys)

@@ -37,7 +37,7 @@ def get_decision():
         result['error'] = 'Not JSON input'
         return jsonify(result)
     json_args = request.get_json()
-    if curr_session is None:
+    if curr_session.is_active():
         result['error'] = 'Need to init first!'
         return jsonify(result)
     if 'judge_id' not in json_args:
@@ -57,7 +57,7 @@ def perform_decision():
         return jsonify(result)
     json_args = request.get_json()
 
-    if curr_session is None:
+    if not curr_session.is_active():
         result['error'] = 'Need to init first!'
         return jsonify(result)
     if 'judge_id' not in json_args or 'favored' not in json_args:
@@ -70,7 +70,7 @@ def perform_decision():
 @app.route('/results')
 def results():
     result = dict()
-    if curr_session is None:
+    if not curr_session.is_active():
         result['error'] = 'Need to init first!'
         return jsonify(result)
     result.update(curr_session.get_results())

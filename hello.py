@@ -37,7 +37,7 @@ def get_decision():
         result['error'] = 'Not JSON input'
         return jsonify(result)
     json_args = request.get_json()
-    if curr_session.is_active():
+    if not curr_session.is_active():
         result['error'] = 'Need to init first!'
         return jsonify(result)
     if 'judge_id' not in json_args:

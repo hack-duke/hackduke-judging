@@ -86,6 +86,7 @@ def results():
     return jsonify(result)
 
 @app.route('/curr_session')
+def curr_session():
     curr_session = store.get_curr_session()
     result = dict()
     if curr_session is None:

@@ -13,6 +13,7 @@ def hello():
 
 @app.route("/init", methods = ['POST'])
 def init_judge_session():
+    print("INITIALIZING")
     result = dict()
     if not request.is_json:
         result['error'] = 'Not JSON input'

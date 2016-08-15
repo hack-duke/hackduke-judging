@@ -34,8 +34,8 @@ class SimpleSession(JudgingSession):
     def get_decision(self, judge_id):
         if judge_id in self.curr_judges:
             return self.curr_judges[judge_id]
-        sorted_x = sorted(self.num_times_judged.items(), key=operator.itemgetter(1))
-        a,b  = sorted_x[0][1], sorted_x[1][1]
+        sorted_x = sorted(self.num_times_judged.items(), key=operator.itemgetter(1), reverse=True)
+        a,b  = sorted_x[0][0], sorted_x[1][0]
         self.curr_judges[judge_id] = (a, b)
         if judge_id not in self.judge_counts:
             self.judge_counts[judge_id] = 0
@@ -57,6 +57,9 @@ class SimpleSession(JudgingSession):
         return ''
 
     def get_results(self):
-        return {'votes': self.votes, 'judge_counts': self.judge_counts}
+        return {'votes': self.votes, 
+                'judge_counts': self.judge_counts, 
+                'num_times_judged': self.num_times_judged,
+                'curr_judges': self.curr_judges}
 
 

@@ -2,8 +2,6 @@ import os
 import redis
 import pickle
 
-CURR_SESSION = "curr_session"
-
 class RedisStore:
 
 	def __init__(self):
@@ -14,14 +12,14 @@ class RedisStore:
 		print('Clearing redis')
 		self.redis.flushdb()
 
-	def save_session(self, session):
-		print('Saving session')
+	def save_session(self, session, session_name):
+		print('Saving session ' + session_name)
 		session = pickle.dumps(session)
-		self.redis.set(CURR_SESSION, session)
+		self.redis.set(session_name, session)
 
-	def get_curr_session(self):
-		print('Getting session')
-		curr_session = self.redis.get(CURR_SESSION)
+	def get_curr_session(self, session_name):
+		print('Getting session ' + session_name)
+		curr_session = self.redis.get(session_name)
 		if curr_session is None:
 			return None
 		else:

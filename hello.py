@@ -13,7 +13,6 @@ def hello():
 
 @app.route("/init", methods = ['POST'])
 def init_judge_session():
-    print("INITIALIZING")
     result = dict()
     if not request.is_json:
         result['error'] = 'Not JSON input'
@@ -64,7 +63,6 @@ def perform_decision():
         result['error'] = 'Not JSON input'
         return jsonify(result)
     json_args = request.get_json()
-
     if curr_session is None:
         result['error'] = 'Need to init first!'
         return jsonify(result)
@@ -86,6 +84,17 @@ def results():
     result.update(curr_session.get_results())
     result['error'] = ''
     return jsonify(result)
+
+@app.route('/curr_session')
+    curr_session = store.get_curr_session()
+    result = dict()
+    if curr_session is None:
+        result['error'] = 'Need to init first!'
+        return jsonify(result)
+    else:
+        result['error'] = ''
+        return jsonify(result)
+
 
 if __name__ == "__main__":
     app.run()

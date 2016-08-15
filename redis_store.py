@@ -1,11 +1,26 @@
 import os
 import redis
+import pickle
 
-redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
-redis = redis.from_url(redis_url)
+CURR_SESSION = "curr_session"
 
-def clear_redis():
-  print("Clearing redis")
-  redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost')
-  r = redis.from_url(redis_url) 
-  r.flushdb()
+class RedisStore:
+
+	def __init__(self):
+		redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+		self.redis = redis.from_url(redis_url)
+
+	def clear_redis():
+		print('Clearing redis')
+		self.redis.flushdb()
+
+	def save_session(self, session):
+		print('Saving session')
+		session = pickle.dumps(session)
+		self.redis.set(CURR_SESSION, session)
+
+	def get_curr_session(self):
+		print('Getting session')
+		return pickle.loads(self.redis.get(CURR_SESSION))
+
+

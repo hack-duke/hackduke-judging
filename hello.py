@@ -77,6 +77,7 @@ def perform_decision():
 
 @app.route('/results')
 def results():
+    curr_session = store.get_curr_session()
     result = dict()
     if curr_session is None:
         result['error'] = 'Need to init first!'

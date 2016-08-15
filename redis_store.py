@@ -21,6 +21,10 @@ class RedisStore:
 
 	def get_curr_session(self):
 		print('Getting session')
-		return pickle.loads(self.redis.get(CURR_SESSION))
+		curr_session = self.redis.get(CURR_SESSION)
+		if curr_session is None:
+			return None
+		else:
+			return pickle.loads(curr_session)
 
 

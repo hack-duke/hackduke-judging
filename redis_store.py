@@ -13,19 +13,16 @@ class RedisStore:
 		self.redis.flushdb()
 
 	def save_session(self, session, session_name):
-		print('Saving session ' + session_name)
 		session = pickle.dumps(session)
-
-		self.redis.multi()
-		pipe = self.redis.pipeline()
-		pipe.set(session_name, session)
-		print(pipe.execute())
+		self.redis.execute_command('MULTI')
+		self.redis.set(session_name, session)
+		result = self.redis.execute_command('EXEC')
+		self.redis.execute_command('WATCH ' + session_name)
+		return result
 
 	def get_curr_session(self, session_name):
-		print('Getting session ' + session_name)
 		curr_session = self.redis.get(session_name)
-		names = [session_name]
-		self.redis.watch(*names)
+		self.redis.execute_command('WATCH ' + session_name)
 		if curr_session is None:
 			return None
 		else:

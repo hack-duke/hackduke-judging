@@ -39,8 +39,11 @@ def get_decision():
     a,b = g.curr_session.get_decision(judge_id)
     result['choice_a'] = a
     result['choice_b'] = b
-    store.save_session(g.curr_session, g.session_name)
-    return jsonify(result)
+    if store.save_session(g.curr_session, g.session_name) is None:
+        before_request()
+        return get_decision()
+    else:
+        return jsonify(result)
 
 @app.route('/perform_decision', methods = ['POST'])
 def perform_decision():
@@ -51,7 +54,11 @@ def perform_decision():
         return jsonify(result)
     judge_id, favored = json_args['judge_id'], json_args['favored']
     result['error'] = g.curr_session.perform_decision(judge_id, favored)
-    store.save_session(g.curr_session, g.session_name)
+    if store.save_session(g.curr_session, g.session_name) is None:
+        before_request()
+        return perform_decision()
+    else:
+        return jsonify(result)
     return jsonify(result)
 
 @app.route('/results', methods = ['POST'])

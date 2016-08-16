@@ -81,7 +81,7 @@ def before_request():
         return jsonify(result)
     g.session_name = json_args['session_name']
     g.curr_session = store.get_curr_session(g.session_name)
-    if g.curr_session is None:
+    if g.curr_session is None and not request.path == '/init':
         result['error'] = 'Need to init first!'
         return jsonify(result)
 

@@ -26,7 +26,6 @@ def init_judge_session():
             result['error'] = str(e)
         else:
             result['error'] = ''
-
     return jsonify(result)
 
 @app.route('/get_decision', methods = ['POST'])

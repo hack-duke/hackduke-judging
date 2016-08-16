@@ -33,6 +33,7 @@ class SimpleSession(JudgingSession):
 
     def get_decision(self, judge_id):
         if judge_id in self.curr_judges:
+            self.judge_counts[judge_id] += 1 
             return self.curr_judges[judge_id]
         sorted_x = sorted(self.num_times_judged.items(), key=operator.itemgetter(1), reverse=True)
         a,b  = sorted_x[0][0], sorted_x[1][0]

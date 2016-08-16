@@ -15,11 +15,17 @@ class RedisStore:
 	def save_session(self, session, session_name):
 		print('Saving session ' + session_name)
 		session = pickle.dumps(session)
-		self.redis.set(session_name, session)
+
+		self.redis.multi()
+		pipe = self.redis.pipeline()
+		pipe.set(session_name, session)
+		print(pipe.execute())
 
 	def get_curr_session(self, session_name):
 		print('Getting session ' + session_name)
 		curr_session = self.redis.get(session_name)
+		names = [session_name]
+		self.redis.watch(*names)
 		if curr_session is None:
 			return None
 		else:

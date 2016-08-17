@@ -64,7 +64,6 @@ def perform_decision():
 @app.route('/results', methods = ['POST'])
 def results():
     result = dict()
-    json_args = request.get_json()
     result.update(g.curr_session.get_results())
     result['error'] = ''
     return jsonify(result)

@@ -12,6 +12,7 @@ def hello():
 
 @app.route("/init", methods = ['POST'])
 def init_judge_session():
+    print("IN INIT JUDGE")
     result = dict()
     json_args = request.get_json()
     if 'num_alts' not in json_args:

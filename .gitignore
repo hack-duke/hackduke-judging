@@ -1,3 +1,5 @@
+curr_settings.py # Keep this out of version control
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

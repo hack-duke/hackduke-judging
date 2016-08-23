@@ -1,11 +1,44 @@
 from flask import Flask, request, jsonify, g
 from judging_sessions import SimpleSession
 from redis_store import RedisStore
+import default_settings, curr_settings
 
 app = Flask(__name__)
+app.config.from_object('default_settings')
+app.config.from_object('curr_settings')
 
 redis_retry_limit = 3
 store = RedisStore()
+
+######## Authentication
+# Taken and modified from http://flask.pocoo.org/snippets/8/
+
+from functools import wraps
+from flask import Response
+
+def check_auth(username, password):
+    """This function is called to check if a username /
+    password combination is valid.
+    """
+    return username == app.config['USER'] and password == app.config['PASSWORD']
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
+
+######## App
 
 @app.route("/")
 def hello():
@@ -63,6 +96,7 @@ def results():
     return jsonify(result)
 
 @app.before_request
+@requires_auth
 def before_request():
     result = dict()
     if not request.is_json:

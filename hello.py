@@ -20,7 +20,6 @@ def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
     """
-    print(app.config)
     return username == app.config['USER'] and password == app.config['PASSWORD']
 
 def authenticate():

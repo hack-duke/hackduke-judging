@@ -58,9 +58,13 @@ class SimpleSession(JudgingSession):
         return ''
 
     def get_results(self):
-        return {'votes': self.votes, 
-                'judge_counts': self.judge_counts, 
+        ranking = sorted(self.votes, key=lambda x: -self.votes[x])
+        return {
+                'ranking': ranking,
+                'votes': self.votes,
+                'judge_counts': self.judge_counts,
                 'num_times_judged': self.num_times_judged,
-                'curr_judges': self.curr_judges}
+                'curr_judges': self.curr_judges
+                }
 
 

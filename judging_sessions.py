@@ -112,9 +112,13 @@ class CrowdBTSession(JudgingSession):
                     key=lambda alt_id: self.alts[alt_id]['num_times_judged'])
             curr_alt = alt_ids[0]
 
-        # If we already have a prev, use 
+        # If we already have a prev, grab a new one that's never seen before
         else:
             alt_ids = [i for i in self.alts.keys() if i not in judge['ignored_alt_ids']]
+            if not alt_ids: # You already judged every alternative, so reset the ignored IDs
+                judge['ignored_alt_ids'] = []
+                alt_ids = self.alts.keys()
+
             curr_alt = crowd_bt.argmax(lambda alt_id: \
                         crowd_bt.expected_information_gain(
                         judge['alpha'], judge['beta'],

@@ -1,3 +1,4 @@
+.DS_Store
 curr_settings.py # Keep this out of version control
 
 # Byte-compiled / optimized / DLL files

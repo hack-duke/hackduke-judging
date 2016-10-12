@@ -1,6 +1,7 @@
 import operator, sys
 sys.path.append('gavel/gavel')
 import crowd_bt
+from random import shuffle
 
 CHOICE_A, CHOICE_B = 'CHOICE_A', 'CHOICE_B'
 
@@ -108,7 +109,8 @@ class CrowdBTSession(JudgingSession):
         judge = self.judges[judge_id]
         # If it's never judged anything before, just pick the least viewed:
         if judge['prev_alt'] is None:
-            alt_ids = sorted(self.alts.keys(),
+            alt_ids = self.alts.keys(); shuffle(alt_ids)
+            alt_ids = sorted(alt_ids,
                     key=lambda alt_id: self.alts[alt_id]['num_times_judged'])
             curr_alt = alt_ids[0]
 
@@ -119,6 +121,7 @@ class CrowdBTSession(JudgingSession):
                 judge['ignored_alt_ids'] = []
                 alt_ids = self.alts.keys()
 
+            shuffle(alt_ids)
             curr_alt = crowd_bt.argmax(lambda alt_id: \
                         crowd_bt.expected_information_gain(
                         judge['alpha'], judge['beta'],

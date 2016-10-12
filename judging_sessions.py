@@ -109,7 +109,7 @@ class CrowdBTSession(JudgingSession):
         judge = self.judges[judge_id]
         # If it's never judged anything before, just pick the least viewed:
         if judge['prev_alt'] is None:
-            alt_ids = self.alts.keys(); shuffle(alt_ids)
+            alt_ids = list(self.alts.keys()); shuffle(alt_ids)
             alt_ids = sorted(alt_ids,
                     key=lambda alt_id: self.alts[alt_id]['num_times_judged'])
             curr_alt = alt_ids[0]

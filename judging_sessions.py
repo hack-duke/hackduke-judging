@@ -80,7 +80,7 @@ class CrowdBTSession(JudgingSession):
             raise ValueError('Number of alternates must be greater than 1!')
 
         self.judges, self.alts, self.num_judges, self.num_alts = {}, {}, 0, 0
-        self.update_alts(list(range(num_alts)))
+        self.update_alts(num_alts)
 
     def update_judges(self, judge_list):
         for judge_name in judge_list:

@@ -72,13 +72,6 @@ class SimpleSession(JudgingSession):
 
 class CrowdBTSession(JudgingSession):
     def __init__(self, num_alts):
-        try:
-            num_alts = int(num_alts)
-        except:
-            raise ValueError('Not an integer!')
-        if num_alts <= 1:
-            raise ValueError('Number of alternates must be greater than 1!')
-
         self.judges, self.alts, self.num_judges, self.num_alts = {}, {}, 0, 0
         self.update_alts(num_alts)
 

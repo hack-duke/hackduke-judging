@@ -173,6 +173,7 @@ class CrowdBTSession(JudgingSession):
         return ''
 
     def perform_overwrite_decision(self, judge_id, winner_id, loser_id):
+        self.update_judges([judge_id])
         judge = self.judges[judge_id]
         self.update_alts([winner_id, loser_id])
         winner, loser = self.alts[winner_id], self.alts[loser_id]

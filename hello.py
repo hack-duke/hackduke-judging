@@ -136,7 +136,7 @@ def perform_overwrite_decision(num=0):
         result['error'] = 'Not enough args'
         return jsonify(result)
     judge_id, winner_id, loser_id = json_args['judge_id'], json_args['winner_id'], json_args['loser_id']
-    result['error'] = g.curr_session.perform_decision(judge_id, favored)
+    result['error'] = g.curr_session.perform_overwrite_decision(judge_id, winner_id, loser_id)
     return save_session(result, result, perform_overwrite_decision, num)
 
 @app.route('/results', methods = ['POST'])

@@ -104,7 +104,7 @@ def get_decision(num=0):
         result['error'] = 'Need num alts'
         return jsonify(result)
     else:
-        g.curr_session.update_alts(list(range(json_args['num_alts'])))
+        g.curr_session.update_alts(json_args['num_alts'])
     if 'judge_id' not in json_args:
         result['error'] = 'Not enough args'
         return jsonify(result)
@@ -147,7 +147,7 @@ def results():
         result['error'] = 'Need num alts'
         return jsonify(result)
     else:
-        g.curr_session.update_alts(list(range(json_args['num_alts'])))
+        g.curr_session.update_alts(json_args['num_alts'])
     result.update(g.curr_session.get_results())
     result['error'] = ''
     return jsonify(result)

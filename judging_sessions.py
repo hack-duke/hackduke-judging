@@ -172,6 +172,26 @@ class CrowdBTSession(JudgingSession):
         winner['num_times_judged'] += 1; loser['num_times_judged'] += 1
         return ''
 
+    def perform_overwrite_decision(self, judge_id, winner_id, loser_id):
+        judge = self.judges[judge_id]
+        self.update_alts([winner_id, loser_id])
+        winner, loser = self.alts[winner_id], self.alts[loser_id]
+        u_alpha, u_beta, u_winner_mu, u_winner_sigma_sq, u_loser_mu, u_loser_sigma_sq = crowd_bt.update(
+            judge['alpha'],
+            judge['beta'],
+            winner['mu'],
+            winner['sigma_sq'],
+            loser['mu'],
+            loser['sigma_sq']
+        )
+        judge['alpha'], judge['beta'] = u_alpha, u_beta
+        winner['mu'], winner['sigma_sq'] = u_winner_mu, u_winner_sigma_sq
+        loser['mu'], loser['sigma_sq'] = u_loser_mu, u_loser_sigma_sq
+        judge['prev_alt'], judge['next_alt'] = judge['next_alt'], None
+        judge['num_times_voted'] += 1
+        winner['num_times_judged'] += 1; loser['num_times_judged'] += 1
+        return ''
+
     def get_results(self):
         ranking = sorted(self.alts.keys(), key=\
                 lambda alt_id: -self.alts[alt_id]['mu'])

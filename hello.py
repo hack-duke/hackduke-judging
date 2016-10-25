@@ -126,6 +126,19 @@ def perform_decision(num=0):
     result['error'] = g.curr_session.perform_decision(judge_id, favored)
     return save_session(result, result, perform_decision, num)
 
+@app.route('/perform_overwrite_decision', methods = ['POST'])
+def perform_overwrite_decision(num=0):
+    result = dict()
+    json_args = request.get_json()
+    if 'judge_id' not in json_args\
+            or 'winner_id' not in json_args\
+            or 'loser_id' not in json_args:
+        result['error'] = 'Not enough args'
+        return jsonify(result)
+    judge_id, winner_id, loser_id = json_args['judge_id'], json_args['winner_id'], json_args['loser_id']
+    result['error'] = g.curr_session.perform_decision(judge_id, favored)
+    return save_session(result, result, perform_overwrite_decision, num)
+
 @app.route('/results', methods = ['POST'])
 def results():
     result = dict()
